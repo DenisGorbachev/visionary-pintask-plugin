@@ -1,4 +1,5 @@
-#share.plugins.visionary = {}
+Meteor.startup ->
+  insertLink($(".board-list-header .quick-icons"))
 
 Template.listHeader.rendered = _.compose(->
   insertLink($(@find(".board-list-header .quick-icons")))
@@ -17,6 +18,3 @@ clickListener = (event) ->
   shouldOpen = !Session.get("cardIsOpen:" + firstCard._id)
   Cards.find({listId: listId}).forEach (card) ->
     Session.set("cardIsOpen:" + card._id, shouldOpen)
-
-Meteor.startup ->
-  insertLink($(".board-list-header .quick-icons"))
