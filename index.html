@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Visionary-pintask-plugin by DenisGorbachev</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Visionary-pintask-plugin</h1>
+          <h2>Expand or collapse all cards in a list</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/DenisGorbachev/visionary-pintask-plugin/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/DenisGorbachev/visionary-pintask-plugin/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/DenisGorbachev/visionary-pintask-plugin" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a name="visionary-plugin-for-pintask" class="anchor" href="#visionary-plugin-for-pintask"><span class="octicon octicon-link"></span></a>Visionary plugin for Pintask</h1>
+
+<p>Expand or collapse all cards in a list on <a href="http://pintask.me/">Pintask</a>, the hackable task tracker.</p>
+
+<p>This versatile plugin is only a couple lines of code:</p>
+
+<div class="highlight highlight-coffee"><pre><span class="nv">insertLink = </span><span class="nf">($listHeaderQuickIcons) -&gt;</span>
+  <span class="nv">$link = </span><span class="nx">$</span><span class="p">(</span><span class="s">"&lt;div class='expand-collapse-all-cards icon-list' title='Expand or collapse all cards in this list'&gt;&lt;/div&gt;"</span><span class="p">)</span>
+  <span class="nx">$link</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s">"click"</span><span class="p">,</span> <span class="nx">clickListener</span><span class="p">)</span>
+  <span class="nx">$listHeaderQuickIcons</span><span class="p">.</span><span class="nx">prepend</span><span class="p">(</span><span class="nx">$link</span><span class="p">)</span>
+
+<span class="nv">clickListener = </span><span class="nf">(event) -&gt;</span>
+  <span class="nv">listId = </span><span class="nx">$</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">closest</span><span class="p">(</span><span class="s">".board-list"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s">"data-id"</span><span class="p">)</span>
+  <span class="nv">firstCard = </span><span class="nx">Cards</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nv">listId: </span><span class="nx">listId</span><span class="p">},</span> <span class="p">{</span><span class="nv">sort: </span><span class="p">{</span><span class="nv">position: </span><span class="mi">1</span><span class="p">}})</span>
+  <span class="k">if</span> <span class="o">!</span><span class="nx">firstCard</span>
+    <span class="k">return</span>
+  <span class="nv">shouldOpen = </span><span class="o">!</span><span class="nx">Session</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">firstCard</span><span class="p">.</span><span class="nx">htmlId</span><span class="p">()</span> <span class="o">+</span> <span class="s">"-is-open"</span><span class="p">)</span>
+  <span class="nx">Cards</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nv">listId: </span><span class="nx">listId</span><span class="p">}).</span><span class="nx">forEach</span> <span class="nf">(card) -&gt;</span>
+    <span class="nx">Session</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">card</span><span class="p">.</span><span class="nx">htmlId</span><span class="p">()</span> <span class="o">+</span> <span class="s">"-is-open"</span><span class="p">,</span> <span class="nx">shouldOpen</span><span class="p">)</span>
+
+<span class="nv">Template.listHeader.rendered = </span><span class="nx">_</span><span class="p">.</span><span class="nx">compose</span><span class="p">(</span><span class="nf">-&gt;</span>
+  <span class="nx">insertLink</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nx">@find</span><span class="p">(</span><span class="s">".board-list-header .quick-icons"</span><span class="p">)))</span>
+<span class="p">,</span> <span class="nx">Template</span><span class="p">.</span><span class="nx">listHeader</span><span class="p">.</span><span class="nx">rendered</span><span class="p">)</span>
+
+<span class="nx">Meteor</span><span class="p">.</span><span class="nx">startup</span> <span class="nf">-&gt;</span>
+  <span class="nx">insertLink</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s">".board-list-header .quick-icons"</span><span class="p">))</span>
+</pre></div>
+
+<p><em>This plugin is written in <a href="http://coffeescript.org/">CoffeeScript</a>. Plain old <a href="https://github.com/DenisGorbachev/visionary-pintask-plugin/blob/master/plugin.js">JS version</a> is available, too.</em></p>
+
+<p>So easy to make your own plugin ;)</p>
+        </section>
+
+        <footer>
+          Visionary-pintask-plugin is maintained by <a href="https://github.com/DenisGorbachev">DenisGorbachev</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
