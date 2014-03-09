@@ -1,7 +1,7 @@
 Visionary plugin for Pintask
 =========================
 
-Expand or collapse all cards in a list.
+Expand or collapse all cards in a list on [Pintask](http://pintask.me/), the hackable task tracker.
 
 This versatile plugin is only a couple lines of code:
 
